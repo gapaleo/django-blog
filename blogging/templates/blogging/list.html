@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+<a class="backlink" href="{% url 'blog_add' %}">Add Post</a>
 <h1>Recent Posts</h1>
 {% comment %} here is where the query happens {% endcomment %}
 {% for post in posts %}

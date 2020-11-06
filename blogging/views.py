@@ -1,7 +1,9 @@
-from django.shortcuts import render
+import datetime
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import loader
 from blogging.models import Post
+from blogging.forms import AddPostForm
 
 
 def stub_view(request, *args, **kwargs):
@@ -30,3 +32,16 @@ def detail_view(request, post_id):
         raise Http404
     context = {'post': post}
     return render(request, 'blogging/detail.html', context)
+
+
+def add_view(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.published_date = datetime.datetime.now()
+            post.save()
+            return redirect(detail_view, post_id=post.pk)
+    form = AddPostForm()
+    context = {'form': form}
+    return render(request, 'blogging/add.html', context)
